@@ -1,0 +1,25 @@
+{% extends 'layouts/p.html' %}
+
+{% block content %}
+<h1>Create Post</h1>
+<div class="card p-8 bg-slate-500">
+
+    <div class="flex items-center mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+        </svg>
+
+        <a href="https://www.flickr.com/explore" target="_blank" class="hover:underline text-gray-500">Find an image on
+            Flickr</a>
+    </div>
+
+    <form method='POST'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="mt-1">Submit Post</button>
+        <a class="button secondaryAction ml-1" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
+    </form>
+</div>
+{% endblock %}
