@@ -184,9 +184,7 @@ input[name='remember'] {
   display: none;
 }
 #id_tags label:has(input:checked) {
-  background-color: var(--black);
-  color: white;
-  border: 1px solid var(--black);
+  @apply bg-stone-500 border border-stone-100 text-white;
 }
 .textarea,
 textarea {

@@ -1,0 +1,8 @@
+{% extends 'layouts/p.html' %}
+
+{% block content %}
+{% for post in posts %}
+{{ post.post.name }}
+{% endfor %}
+
+{% endblock %}
