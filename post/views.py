@@ -1,7 +1,7 @@
 from django.http import HttpResponseServerError
 from django.shortcuts import render, redirect
 
-from .models import Post
+from .models import Post, Tag
 from .forms import PostForm, UpdatePostForm
 from bs4 import BeautifulSoup
 import requests
@@ -9,9 +9,19 @@ from django.shortcuts import get_object_or_404
 from django.contrib import messages
 
 
-def home(request):
+def home(request, tag=None):
+    if tag:
+        posts = Post.objects.filter(tags__slug=tag)
+        tag = get_object_or_404(Tag, slug=tag)
+    else:
+        posts = Post.objects.all()
+
+    categories = Tag.objects.all()
+
     context = {
-        'posts': Post.objects.all()
+        'posts': posts,
+        'categories': categories,
+        'tag': tag,
     }
     return render(request, 'post/home.html', context)
 
@@ -81,3 +91,11 @@ def delete_post(request, pk):
         messages.success(request, 'Post deleted successfully')
         return redirect('home')
     return render(request, 'post/delete.html', {'post': post})
+
+
+# def cagetory_list(request, tag):
+#     posts = Post.objects.filter(tags__slug__in=[tag])
+#     context = {
+#         'posts': posts
+#     }
+    return render(request, 'post/home.html', context)
