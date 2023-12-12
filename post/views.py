@@ -2,9 +2,11 @@ from django.http import HttpResponseServerError
 from django.shortcuts import render, redirect
 
 from .models import Post
-from .forms import PostForm
+from .forms import PostForm, UpdatePostForm
 from bs4 import BeautifulSoup
 import requests
+from django.shortcuts import get_object_or_404
+from django.contrib import messages
 
 
 def home(request):
@@ -48,3 +50,34 @@ def create(request):
             return redirect('home')
 
     return render(request, 'post/create.html', {'form': form})
+
+
+def post_detail(request, pk):
+    post = get_object_or_404(Post, id=pk)
+    context = {'post': post}
+    return render(request, 'post/post_detail.html', context)
+
+
+def update_post(request, pk):
+    post = get_object_or_404(Post, id=pk)
+    form = UpdatePostForm(instance=post)
+    if request.method == 'POST':
+        form = UpdatePostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Post updated successfully')
+            return redirect('home')
+        else:
+            messages.error(request, 'updated failed')
+            return redirect('home')
+    context = {'post': post, 'form': form}
+    return render(request, 'post/update.html', context)
+
+
+def delete_post(request, pk):
+    post = get_object_or_404(Post, id=pk)
+    if request.method == 'POST':
+        post.delete()
+        messages.success(request, 'Post deleted successfully')
+        return redirect('home')
+    return render(request, 'post/delete.html', {'post': post})
