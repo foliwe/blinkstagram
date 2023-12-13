@@ -1,5 +1,7 @@
 from django.db import models
 import uuid
+from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ValidationError
 
 
 class Post(models.Model):
@@ -20,8 +22,18 @@ class Post(models.Model):
         ordering = ['-created_at']
 
 
+def validate_file_size(value):
+    limit = 1 * 1024 * 1024  # 5 MB limit
+    if value.size > limit:
+        raise ValidationError('File size cannot exceed 1 MB.')
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=50)
+    image = models.FileField(
+        upload_to='icons/', null=True, blank=True,
+        validators=[FileExtensionValidator(['jpg', 'png', 'svg']),
+                    validate_file_size])
     slug = models.SlugField(max_length=50, unique=True)
     order = models.IntegerField(null=True)
 
